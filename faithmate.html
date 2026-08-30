@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FaithMate — Catechism Learning, Grade 1-12</title>
+<style>
+:root{
+  --bg:#0b1220; --bg2:#101a2e; --surface:#131f38; --surface2:#182642;
+  --border:#22314f; --text:#eaf0fb; --muted:#94a6c7;
+  --violet:#6d6ff2; --violet2:#8f92ff; --teal:#37c2b3; --gold:#f2c265; --dawn:#f4906b;
+  --green:#34d399; --red:#f87171;
+  --radius:16px; --radius-lg:22px;
+  --shadow: 0 10px 40px rgba(30,50,110,.35);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text)}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 20% -10%, rgba(109,111,242,.22), transparent 45%),
+    radial-gradient(circle at 100% 0%, rgba(242,194,101,.10), transparent 40%),
+    var(--bg);
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em;margin:0 0 8px}
+h1{font-size:clamp(26px,4vw,42px)}
+h2{font-size:clamp(20px,3vw,28px)}
+h3{font-size:18px;margin-bottom:6px}
+p{line-height:1.6;color:var(--text)}
+.fm-muted{color:var(--muted);font-size:14px}
+.fm-gradient{background:linear-gradient(90deg,var(--violet2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.fm-reveal{animation:fmFade .5s ease both}
+.fm-reveal-onscroll{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease}
+.fm-reveal-onscroll.is-in{opacity:1;transform:none}
+@keyframes fmFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.fm-nav{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:18px;padding:14px 28px;background:rgba(11,18,32,.75);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.fm-nav__brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;cursor:pointer;white-space:nowrap}
+.fm-nav__brand b{color:var(--violet2)}
+.fm-nav__links{display:flex;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}
+.fm-nav__links::-webkit-scrollbar{display:none}
+.fm-nav__link{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;font-size:14px;color:var(--muted);white-space:nowrap;transition:.15s}
+.fm-nav__link:hover{color:var(--text);background:var(--surface2)}
+.fm-nav__link.is-active{color:#0b1220;background:linear-gradient(135deg,var(--teal),var(--gold));font-weight:700}
+.fm-nav__right{display:flex;align-items:center;gap:10px}
+.fm-chip{padding:6px 12px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-size:13px;cursor:pointer}
+.fm-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--violet),var(--teal));font-weight:700;cursor:pointer}
+.fm-nav__burger{display:none;background:none;border:none;color:var(--text);font-size:22px}
+.fm-mobilenav{display:none;flex-direction:column;background:var(--surface);border-bottom:1px solid var(--border);padding:6px 10px}
+.fm-mobilenav.is-open{display:flex}
+.fm-mobilenav__link{padding:12px 10px;border-radius:10px;color:var(--muted)}
+.fm-mobilenav__link.is-active{color:#fff;background:var(--surface2)}
+@media (max-width:920px){.fm-nav__links{display:none}.fm-nav__burger{display:block}}
+
+.fm-main{max-width:920px;margin:0 auto;padding:40px 24px 80px;position:relative}
+.fm-main--wide{max-width:1160px}
+.fm-footer{text-align:center;color:var(--muted);font-size:13px;padding:26px;border-top:1px solid var(--border)}
+.fm-section{margin-top:46px}
+.fm-pagehead{margin-bottom:28px}
+.fm-pagehead--row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px}
+.fm-pagehead__badges{display:flex;gap:8px}
+
+.fm-tag{display:inline-block;padding:5px 12px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-size:12px;color:var(--violet2);font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-bottom:10px}
+.fm-tag--demo{background:rgba(242,194,101,.12);border-color:rgba(242,194,101,.4);color:var(--gold)}
+.fm-badge{padding:6px 12px;border-radius:20px;font-size:13px;font-weight:700;white-space:nowrap}
+.fm-badge--xp{background:rgba(109,111,242,.18);color:var(--violet2);border:1px solid rgba(109,111,242,.4)}
+.fm-badge--streak{background:rgba(242,194,101,.14);color:var(--gold);border:1px solid rgba(242,194,101,.35)}
+
+.fm-btn{border:none;border-radius:12px;padding:12px 20px;font-weight:700;font-size:14px;transition:.15s transform,.15s box-shadow,.15s background}
+.fm-btn--primary{background:linear-gradient(135deg,var(--violet),var(--teal));color:#fff;box-shadow:var(--shadow)}
+.fm-btn--primary:hover{transform:translateY(-2px)}
+.fm-btn--outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.fm-btn--outline:hover{border-color:var(--violet2);color:var(--violet2)}
+.fm-btn--ghost{background:var(--surface2);color:var(--text)}
+.fm-btn--ghost:hover{background:var(--surface)}
+
+.fm-card{background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;transition:.2s transform,.2s border-color}
+.fm-card:hover{transform:translateY(-3px);border-color:rgba(109,111,242,.5)}
+.fm-card--accent{border-color:rgba(109,111,242,.55);box-shadow:var(--shadow)}
+.fm-card--notice{border-color:rgba(242,194,101,.4);background:linear-gradient(180deg,rgba(242,194,101,.08),var(--bg2))}
+.fm-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
+@media (max-width:800px){.fm-grid3{grid-template-columns:1fr}}
+
+.fm-progress{display:flex;flex-direction:column;gap:6px}
+.fm-progress__track{height:10px;border-radius:20px;background:var(--surface2);overflow:hidden}
+.fm-progress__fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--violet),var(--teal));transition:width .8s ease}
+.fm-progress__label{font-size:12px;color:var(--muted)}
+
+.fm-hero{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:30px 0 10px;overflow:hidden;border-radius:28px}
+@media (max-width:900px){.fm-hero{grid-template-columns:1fr}}
+.fm-hero__text{position:relative;z-index:2}
+.fm-hero__cta{display:flex;gap:12px;margin:22px 0;flex-wrap:wrap}
+.fm-hero__stats{display:flex;gap:30px;margin-top:10px}
+.fm-hero__stats div{display:flex;flex-direction:column}
+.fm-hero__stats b{font-size:22px}
+.fm-hero__stats span{color:var(--muted);font-size:12px}
+.fm-hero__art{position:relative;min-height:340px;display:flex;align-items:flex-end;justify-content:center}
+.fm-skyline{position:absolute;inset:0;width:100%;height:100%}
+.fm-hero__card{position:relative;z-index:2;background:rgba(19,31,56,.88);backdrop-filter:blur(6px);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;width:260px;box-shadow:var(--shadow);margin:0 0 18px}
+.fm-hero__card-row{padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
+.fm-hero__card-row:last-of-type{border-bottom:none}
+
+.fm-flowgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+@media (max-width:800px){.fm-flowgrid{grid-template-columns:repeat(2,1fr)}}
+.fm-flowstep{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;font-size:13px;font-weight:600;display:flex;flex-direction:column;gap:8px}
+.fm-flowstep__n{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--teal));display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff}
+
+.fm-cta-banner{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(120deg,rgba(109,111,242,.16),rgba(242,194,101,.10));border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;gap:20px;flex-wrap:wrap}
+
+.fm-audience{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+@media (max-width:800px){.fm-audience{grid-template-columns:1fr}}
+.fm-audience__card{border-radius:var(--radius-lg);padding:26px;border:1px solid var(--border)}
+.fm-audience__card--students{background:linear-gradient(160deg,rgba(109,111,242,.16),var(--bg2))}
+.fm-audience__card--teachers{background:linear-gradient(160deg,rgba(55,194,179,.14),var(--bg2))}
+.fm-audience__card ul{margin:12px 0 18px;padding-left:18px;color:var(--muted);font-size:14px;line-height:1.8}
+
+.fm-authcard{max-width:420px;margin:20px auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:30px}
+.fm-field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted);margin-bottom:16px}
+.fm-field input,.fm-field select,.fm-field textarea{padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:14px;font-family:inherit;resize:vertical}
+.fm-field input:focus,.fm-field select:focus,.fm-field textarea:focus{outline:2px solid var(--violet2)}
+
+.fm-founder{display:flex;gap:20px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin:18px 0}
+.fm-founder__avatar{width:64px;height:64px;flex:none;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px}
+
+.fm-gradegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:800px){.fm-gradegrid{grid-template-columns:repeat(2,1fr)}}
+.fm-gradecard{display:flex;flex-direction:column;align-items:flex-start;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;color:var(--text);text-align:left;transition:.15s}
+.fm-gradecard:hover{border-color:var(--violet2);transform:translateY(-2px)}
+.fm-gradecard.is-selected{border-color:var(--violet);background:linear-gradient(180deg,rgba(109,111,242,.16),transparent)}
+.fm-gradecard__num{font-size:26px;font-weight:800;color:var(--violet2)}
+.fm-gradecard__label{font-weight:700}
+.fm-gradecard__unit{font-size:12px;color:var(--muted)}
+
+.fm-lessonlist{display:flex;flex-direction:column;gap:12px}
+.fm-lessonrow{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px}
+.fm-lessonrow.is-done{border-color:rgba(52,211,153,.4)}
+.fm-lessonrow__num{width:36px;height:36px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.fm-lessonrow.is-done .fm-lessonrow__num{background:rgba(52,211,153,.2);color:var(--green)}
+.fm-lessonrow__body{flex:1}
+.fm-lessonrow__body h3{margin-bottom:2px}
+.fm-lessoncontent{display:flex;flex-direction:column;gap:14px}
+.fm-lessonactions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+
+.fm-quizwrap{max-width:640px;margin:0 auto}
+.fm-quizhead{margin-bottom:20px;display:flex;flex-direction:column;gap:10px}
+.fm-options{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.fm-option{text-align:left;padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:15px;transition:.15s}
+.fm-option:hover:not(:disabled){border-color:var(--violet2);background:var(--surface2)}
+.fm-option.is-correct{border-color:var(--green);background:rgba(52,211,153,.12)}
+.fm-option.is-wrong{border-color:var(--red);background:rgba(248,113,113,.12)}
+.fm-option:disabled{cursor:default}
+.fm-feedback{margin-top:18px;padding:16px 18px;border-radius:14px;border:1px solid var(--border)}
+.fm-feedback.is-correct{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+.fm-feedback.is-wrong{border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.08)}
+.fm-feedback .fm-btn{margin-top:10px}
+.fm-wrong{color:var(--red)}
+.fm-right{color:var(--green)}
+
+.fm-chat{display:flex;flex-direction:column;height:60vh;min-height:420px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.fm-chat__log{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.fm-chat__bubble{max-width:80%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.5}
+.fm-chat__bubble--ai{align-self:flex-start;background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:4px}
+.fm-chat__bubble--user{align-self:flex-end;background:linear-gradient(135deg,var(--violet),var(--teal));color:#fff;border-bottom-right-radius:4px}
+.fm-chat__form{display:flex;gap:10px;padding:14px;border-top:1px solid var(--border)}
+.fm-chat__form input{flex:1;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg2);color:var(--text)}
+
+.fm-quicklinks{display:flex;gap:10px;flex-wrap:wrap}
+
+.fm-toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:var(--surface2);border:1px solid var(--border);padding:12px 20px;border-radius:12px;opacity:0;transition:.3s;z-index:100;font-size:14px}
+.fm-toast.is-visible{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .fm-reveal-onscroll{opacity:1;transform:none;transition:none}
+}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+/* ============================================================================
+   FaithMate — AI Catechism Learning Platform (Grades 1–12, Syro-Malabar Church)
+   Single-bundle TypeScript app compiled to a static HTML+JS demo.
+
+   IMPORTANT CONTENT NOTICE
+   -------------------------
+   All lesson text and quiz questions in DEMO_CURRICULUM below are clearly
+   marked isPlaceholder = true. They are original, generic, non-denomination-
+   specific illustrative content written for this demo ONLY. They are NOT
+   taken from, and must not be presented as, any official Syro-Malabar
+   catechism textbook. The CurriculumRepository is designed so that verified,
+   licensed textbook content can be swapped in later without changing any
+   page, component, or quiz-engine code — every consumer reads through the
+   repository interface, never the raw array.
+   ========================================================================= */
+// ---------------------------------------------------------------------------
+// 2. DEMO CURRICULUM DATA (placeholder — see notice above)
+// ---------------------------------------------------------------------------
+// Real, publicly documented fact (not fabricated): the Syro-Malabar Church's
+// Synodal Commission for Catechesis publishes an official textbook series
+// called "On the Path of Salvation", covering Kindergarten through Grade XII.
+// FaithMate does NOT reproduce any text from that series. This app only
+// references its real name/publisher, and gives teachers a place to add
+// verified excerpts themselves — clearly separated from AI/demo content.
+const TEXTBOOK_SERIES = {
+    name: "On the Path of Salvation",
+    publisher: "Syro-Malabar Synodal Commission for Catechesis",
+    coverage: "Kindergarten – Grade XII",
+};
+const UNIT_NAMES = {
+    1: "God's Wonderful World", 2: "Stories of Faith", 3: "Our Church Family",
+    4: "The Life of Jesus", 5: "The Sacraments", 6: "The Ten Commandments",
+    7: "The Holy Mass", 8: "Prayer & the Saints", 9: "Church History Basics",
+    10: "Faith & Moral Life", 11: "The Creed in Depth", 12: "Living as a Witness",
+};
+function makeLesson(grade, n, title, summary, blocks) {
+    return {
+        id: `g${grade}-l${n}`,
+        grade,
+        unit: UNIT_NAMES[grade],
+        title,
+        summary,
+        estMinutes: 8 + (n % 3) * 2,
+        content: blocks.map(([heading, body]) => ({ heading, body })),
+        isPlaceholder: true,
+    };
+}
+function makeQ(grade, lessonId, n, question, options, correctIndex, explanation) {
+    return { id: `${lessonId}-q${n}`, grade, lessonId, question, options, correctIndex, explanation, isPlaceholder: true };
+}
+const LESSONS = [];
+const QUESTIONS = [];
+for (let g = 1; g <= 12; g++) {
+    const grade = g;
+    const l1 = makeLesson(grade, 1, `Lesson 1: ${UNIT_NAMES[grade]} — Getting Started`, `A gentle introduction to this term's theme, sized for Grade ${grade} learners. [DEMO CONTENT]`, [
+        ["Why this matters", `[Placeholder] At Grade ${grade} level, we begin by wondering together about ${UNIT_NAMES[grade].toLowerCase()} and why it matters in daily life.`],
+        ["Key idea", `[Placeholder] This is a short, simplified explanation suitable for a Grade ${grade} student. Replace with verified textbook text before real classroom use.`],
+        ["Reflect", `[Placeholder] A short reflection question a Grade ${grade} catechism teacher might ask after this lesson.`],
+    ]);
+    const l2 = makeLesson(grade, 2, `Lesson 2: ${UNIT_NAMES[grade]} — Going Deeper`, `Building on Lesson 1 with a slightly deeper look, still at Grade ${grade} level. [DEMO CONTENT]`, [
+        ["Recap", `[Placeholder] A quick recap of Lesson 1's key idea, restated simply for Grade ${grade}.`],
+        ["New idea", `[Placeholder] A second idea within ${UNIT_NAMES[grade]}, written at an appropriate reading level for Grade ${grade}.`],
+        ["Try this at home", `[Placeholder] A small family activity or prayer suggestion tied to this unit.`],
+    ]);
+    LESSONS.push(l1, l2);
+    QUESTIONS.push(makeQ(grade, l1.id, 1, `[DEMO] Which of these best matches the main idea of "${l1.title}"?`, [
+        `${UNIT_NAMES[grade]} is about noticing something bigger than ourselves`,
+        "It's only about memorizing dates",
+        "It has nothing to do with daily life",
+        "It is the same as a school science lesson",
+    ], 0, `[Placeholder explanation] Lesson 1 framed ${UNIT_NAMES[grade]} as something we notice and live, not just facts to memorize.`), makeQ(grade, l1.id, 2, `[DEMO] True or False: This is Grade ${grade} content only.`, ["True", "False"], 0, `[Placeholder explanation] FaithMate always shows content matching the grade you selected — never a different grade's material.`), makeQ(grade, l2.id, 1, `[DEMO] In Lesson 2, what were you asked to try at home?`, [
+        "A small family activity or prayer",
+        "A written exam",
+        "Nothing — Lesson 2 has no activity",
+        "A trip to another country",
+    ], 0, `[Placeholder explanation] Lesson 2 ended with a simple take-home activity idea.`), makeQ(grade, l2.id, 2, `[DEMO] Which grade level is this quiz written for?`.replace("Which grade level is this quiz written for?", `${UNIT_NAMES[grade]} is the unit title for which grade?`), [`Grade ${grade}`, `Grade ${grade === 12 ? 1 : grade + 1}`, `Grade ${grade === 1 ? 12 : grade - 1}`, "None of these"], 0, `[Placeholder explanation] You're currently learning Grade ${grade} content, so the unit title belongs to Grade ${grade}.`));
+}
+// ---------------------------------------------------------------------------
+// 3. REPOSITORY LAYER (swap-ready for a real DB / verified textbook content)
+// ---------------------------------------------------------------------------
+const CurriculumRepository = {
+    getLessonsForGrade(grade) {
+        return LESSONS.filter(l => l.grade === grade);
+    },
+    getLesson(id) {
+        return LESSONS.find(l => l.id === id);
+    },
+    getQuizForLesson(lessonId) {
+        return QUESTIONS.filter(q => q.lessonId === lessonId);
+    },
+    getDailyQuiz(grade) {
+        const pool = QUESTIONS.filter(q => q.grade === grade);
+        const shuffled = [...pool].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, 5);
+    },
+    getBrainModeQuestions(grade) {
+        const pool = QUESTIONS.filter(q => q.grade === grade);
+        return [...pool].sort(() => Math.random() - 0.5);
+    },
+};
+function demoLeaderboard(grade) {
+    const names = ["Anna Thomas", "Nevin Jose", "Diya Mathew", "Aaron Kurian", "Sara Varghese", "Liya George", "Rohan Sebastian", "Maria Joseph", "Jobin Abraham", "Angel Paul"];
+    return names.map((name, i) => ({
+        name,
+        grade: grade ?? ((i % 12) + 1),
+        xp: 1200 - i * 87 + (i % 3) * 15,
+        streak: 12 - i,
+    })).sort((a, b) => b.xp - a.xp);
+}
+const TEACHER_CLASS_SUMMARY = [
+    { grade: 8, students: 24, avgProgress: 0.62, avgQuizScore: 0.78 },
+    { grade: 9, students: 19, avgProgress: 0.54, avgQuizScore: 0.71 },
+];
+const HEADMASTER_SCHOOL_SUMMARY = Array.from({ length: 12 }, (_, i) => ({
+    grade: (i + 1),
+    students: 15 + ((i * 7) % 20),
+    avgProgress: Math.round((0.4 + ((i * 13) % 40) / 100) * 100) / 100,
+    activeTeachers: 1 + (i % 2),
+}));
+// ---------------------------------------------------------------------------
+// 5. APP STATE (in-memory only — no browser storage APIs are used)
+// ---------------------------------------------------------------------------
+const state = {
+    name: "",
+    grade: null,
+    xp: 0,
+    streak: 3,
+    lastActiveDay: null,
+    completedLessonIds: new Set(),
+    quizHistory: [],
+    role: "student",
+};
+let lastQuizResult = null;
+let activeQuiz = null;
+let aiChatLog = [];
+// Teacher-added chapter notes, keyed by lessonId. In-memory only for this
+// session (no backend/storage) — this is where a real teacher would paste
+// or upload a verified excerpt from the official textbook for their class.
+const teacherChapterNotes = {};
+function levelFromXp(xp) { return 1 + Math.floor(xp / 200); }
+function xpIntoLevel(xp) { return xp % 200; }
+function parseHash() {
+    const raw = location.hash.replace(/^#\/?/, "") || "home";
+    const [path, ...rest] = raw.split("/");
+    const params = {};
+    if (rest.length)
+        params.id = rest.join("/");
+    return { path, params };
+}
+function navigate(path) { location.hash = "#/" + path; }
+function requireGrade() {
+    if (state.grade === null) {
+        navigate("grade-select");
+        return false;
+    }
+    return true;
+}
+// ---------------------------------------------------------------------------
+// 7. SMALL DOM HELPERS
+// ---------------------------------------------------------------------------
+function h(strings, ...vals) {
+    return strings.reduce((acc, s, i) => acc + s + (vals[i] !== undefined ? String(vals[i]) : ""), "");
+}
+function esc(s) {
+    const d = document.createElement("div");
+    d.innerText = s;
+    return d.innerHTML;
+}
+function qs(sel, root = document) {
+    return root.querySelector(sel);
+}
+// ---------------------------------------------------------------------------
+// 8. REUSABLE UI COMPONENTS (return HTML strings)
+// ---------------------------------------------------------------------------
+function ProgressBar(pct, label) {
+    const clamped = Math.max(0, Math.min(100, Math.round(pct)));
+    return h `
+    <div class="fm-progress" role="progressbar" aria-valuenow="${clamped}" aria-valuemin="0" aria-valuemax="100">
+      <div class="fm-progress__track">
+        <div class="fm-progress__fill" style="width:${clamped}%"></div>
+      </div>
+      ${label ? `<span class="fm-progress__label">${esc(label)}</span>` : ""}
+    </div>`;
+}
+function XpBadge(xp) {
+    const lvl = levelFromXp(xp);
+    return h `<span class="fm-badge fm-badge--xp">⚡ ${xp} XP · Lvl ${lvl}</span>`;
+}
+function StreakBadge(streak) {
+    return h `<span class="fm-badge fm-badge--streak">🔥 ${streak}-day streak</span>`;
+}
+function PlaceholderTag() {
+    return `<span class="fm-tag fm-tag--demo">SAMPLE CONTENT — not official textbook material</span>`;
+}
+function Card(inner, extraClass = "") {
+    return h `<div class="fm-card ${extraClass}">${inner}</div>`;
+}
+function Button(label, action, variant = "primary", extra = "") {
+    return h `<button class="fm-btn fm-btn--${variant}" data-action="${action}" ${extra}>${esc(label)}</button>`;
+}
+function TopNav(active) {
+    const loggedIn = state.name.length > 0;
+    const links = [
+        ["dashboard", "Dashboard", "🏠"], ["lessons", "Lessons", "📘"], ["textbooks", "Textbooks", "📚"],
+        ["daily-quiz", "Daily Quiz", "🗓️"],
+        ["games", "Games", "🎮"], ["brain-mode", "Brain Mode", "🧠"], ["ai-tutor", "AI Tutor", "💬"],
+        ["progress", "Progress", "📈"], ["leaderboard", "Leaderboard", "🏆"],
+    ];
+    const gradeLabel = state.grade ? `Grade ${state.grade}` : "No grade";
+    return h `
+  <header class="fm-nav">
+    <div class="fm-nav__brand" data-action="go:home">
+      <span class="fm-nav__logo">✝️</span><span>Faith<b>Mate</b></span>
+    </div>
+    <nav class="fm-nav__links">
+      ${links.map(([path, label, icon]) => h `
+        <a href="#/${path}" class="fm-nav__link ${active === path ? "is-active" : ""}">
+          <span>${icon}</span> ${label}
+        </a>`).join("")}
+    </nav>
+    <div class="fm-nav__right">
+      <span class="fm-chip" data-action="go:grade-select" title="Change grade">${gradeLabel}</span>
+      ${loggedIn ? XpBadge(state.xp) : ""}
+      <div class="fm-avatar" data-action="go:profile" title="Profile">${loggedIn ? esc(state.name.slice(0, 1).toUpperCase()) : "?"}</div>
+    </div>
+    <button class="fm-nav__burger" data-action="toggle:mobilenav" aria-label="Menu">☰</button>
+  </header>
+  <nav class="fm-mobilenav" id="mobilenav">
+    ${links.map(([path, label, icon]) => h `<a href="#/${path}" class="fm-mobilenav__link ${active === path ? "is-active" : ""}">${icon} ${label}</a>`).join("")}
+    <a href="#/settings" class="fm-mobilenav__link">⚙️ Settings</a>
+    <a href="#/about" class="fm-mobilenav__link">ℹ️ About / Founder</a>
+  </nav>`;
+}
+function MountainChurchSkyline() {
+    // Calm dusk skyline: sky gradient, sun, layered mountains, and a small
+    // church with a cross — the "coo/calm church + mountain" visual identity.
+    return h `
+  <svg class="fm-skyline" viewBox="0 0 500 400" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="fmSkyGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#182642"/>
+        <stop offset="60%" stop-color="#101a2e"/>
+        <stop offset="100%" stop-color="#0b1220"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="500" height="400" fill="url(#fmSkyGrad)"/>
+    <circle cx="250" cy="150" r="58" fill="#f2c265" opacity="0.85"/>
+    <circle cx="250" cy="150" r="90" fill="#f2c265" opacity="0.12"/>
+    <path d="M0 230 L60 170 L120 220 L190 140 L260 225 L330 165 L400 220 L460 175 L500 230 L500 400 L0 400 Z" fill="#22335a" opacity="0.55"/>
+    <path d="M0 270 L80 210 L150 260 L230 190 L300 265 L380 205 L460 260 L500 235 L500 400 L0 400 Z" fill="#1a2748" opacity="0.75"/>
+    <path d="M0 320 L90 265 L170 310 L260 245 L340 315 L420 270 L500 320 L500 400 L0 400 Z" fill="#131f38"/>
+    <g transform="translate(210,255)">
+      <rect x="0" y="40" width="80" height="65" fill="#0d1730"/>
+      <polygon points="-8,40 40,5 88,40" fill="#0d1730"/>
+      <rect x="32" y="-28" width="16" height="34" fill="#0d1730"/>
+      <polygon points="24,-28 40,-46 56,-28" fill="#0d1730"/>
+      <line x1="40" y1="-46" x2="40" y2="-62" stroke="#f2c265" stroke-width="2.4"/>
+      <line x1="32" y1="-55" x2="48" y2="-55" stroke="#f2c265" stroke-width="2.4"/>
+      <circle cx="40" cy="65" r="9" fill="#f2c265" opacity="0.9"/>
+      <rect x="14" y="60" width="10" height="18" fill="#f2c265" opacity="0.55"/>
+      <rect x="56" y="60" width="10" height="18" fill="#f2c265" opacity="0.55"/>
+    </g>
+  </svg>`;
+}
+function Shell(active, bodyHtml, opts = {}) {
+    return h `
+    ${TopNav(active)}
+    <main class="fm-main ${opts.wide ? "fm-main--wide" : ""} fm-reveal">${bodyHtml}</main>
+    <footer class="fm-footer">FaithMate · Demo build · Grades 1–12 · Syro-Malabar catechism companion</footer>
+  `;
+}
+// ---------------------------------------------------------------------------
+// 9. PAGES — MARKETING / AUTH
+// ---------------------------------------------------------------------------
+function PageHome() {
+    const loggedIn = state.name.length > 0;
+    return h `
+  ${TopNav("home")}
+  <main class="fm-main fm-main--wide fm-reveal">
+    <section class="fm-hero">
+      <div class="fm-hero__text">
+        <span class="fm-tag">Grades 1–12 · Syro-Malabar Church</span>
+        <h1>Learn the Catechism like it was made for <span class="fm-gradient">you</span>.</h1>
+        <p>FaithMate turns each grade's catechism syllabus into bite-sized lessons, quizzes, and an AI tutor that
+        explains — not just answers — so learning continues at home, not only in class.</p>
+        <div class="fm-hero__cta">
+          ${loggedIn ? Button("Go to Dashboard", "go:dashboard") : Button("Get Started", "go:signup")}
+          ${Button("Choose your Grade", "go:grade-select", "outline")}
+        </div>
+        <div class="fm-hero__stats">
+          <div><b>12</b><span>Grade levels</span></div>
+          <div><b>24</b><span>Demo lessons</span></div>
+          <div><b>AI</b><span>Tutor built-in</span></div>
+        </div>
+      </div>
+      <div class="fm-hero__art" aria-hidden="true">
+        ${MountainChurchSkyline()}
+        <div class="fm-hero__card">
+          <div class="fm-hero__card-row">📘 Lesson 1 complete</div>
+          <div class="fm-hero__card-row">🔥 3-day streak</div>
+          <div class="fm-hero__card-row">⚡ +40 XP earned</div>
+          ${ProgressBar(62, "Grade 8 · 62% complete")}
+        </div>
+      </div>
+    </section>
+
+    <section class="fm-section fm-reveal-onscroll">
+      <h2>The full learning flow</h2>
+      <div class="fm-flowgrid">
+        ${["Choose Grade", "Dashboard", "Lessons", "Lesson", "Quiz", "Mistake Help", "AI Tutor", "Progress"].map((s, i) => h `
+          <div class="fm-flowstep"><span class="fm-flowstep__n">${i + 1}</span>${s}</div>`).join("")}
+      </div>
+    </section>
+
+    <section class="fm-section fm-reveal-onscroll">
+      <h2>Made for two people every Sunday: the student and the teacher</h2>
+      <div class="fm-audience">
+        <div class="fm-audience__card fm-audience__card--students">
+          <span class="fm-tag">For Students</span>
+          <h3>Learn at your own pace, between classes</h3>
+          <ul>
+            <li>Grade-locked lessons, quizzes &amp; daily challenges</li>
+            <li>Mistakes explained, not just marked wrong</li>
+            <li>AI Tutor that gives hints before answers</li>
+            <li>XP, streaks &amp; a friendly leaderboard</li>
+          </ul>
+          ${Button("Start as a student", "go:signup", "outline")}
+        </div>
+        <div class="fm-audience__card fm-audience__card--teachers">
+          <span class="fm-tag">For Teachers</span>
+          <h3>Bring your textbook chapters online</h3>
+          <ul>
+            <li>Attach verified <b>${esc(TEXTBOOK_SERIES.name)}</b> excerpts per chapter</li>
+            <li>See class-wide progress &amp; quiz scores at a glance</li>
+            <li>Content stays clearly separated: official vs. AI/demo</li>
+            <li>Works alongside your normal Sunday class, not instead of it</li>
+          </ul>
+          ${Button("Open Teacher Dashboard", "go:teacher-dashboard", "outline")}
+        </div>
+      </div>
+    </section>
+
+    <section class="fm-section fm-grid3 fm-reveal-onscroll">
+      ${Card(`<h3>📖 Grade-accurate content</h3><p>Everything a student sees — lessons, quizzes, daily challenges — is filtered to their selected grade. No mixing.</p>`)}
+      ${Card(`<h3>💬 AI Tutor that teaches</h3><p>Explains concepts, gives hints, and walks through mistakes step-by-step instead of only revealing the correct answer.</p>`)}
+      ${Card(`<h3>🏫 Built for whole parishes</h3><p>Dashboards for students, catechism teachers, headmasters, and graduates who want to keep growing in faith.</p>`)}
+    </section>
+
+    <section class="fm-section fm-cta-banner fm-reveal-onscroll">
+      <div>
+        <h2>Ready to see FaithMate in action?</h2>
+        <p>This is a working demo — pick a grade and try the full flow in under two minutes.</p>
+      </div>
+      ${Button("Choose your Grade →", "go:grade-select")}
+    </section>
+  </main>
+  <footer class="fm-footer">FaithMate · Demo build · <a href="#/about">About &amp; Founder</a></footer>`;
+}
+function PageLogin() {
+    return Shell("login", h `
+    <div class="fm-authcard">
+      <h1>Welcome back</h1>
+      <p class="fm-muted">Demo login — no password is checked. Just enter a name to continue.</p>
+      <label class="fm-field">Name<input id="loginName" type="text" placeholder="e.g. Anna Thomas" value="${esc(state.name)}"/></label>
+      ${Button("Log in", "auth:login")}
+      <p class="fm-muted">New here? <a href="#/signup">Create an account</a></p>
+    </div>`);
+}
+function PageSignup() {
+    return Shell("signup", h `
+    <div class="fm-authcard">
+      <h1>Create your FaithMate account</h1>
+      <p class="fm-muted">Demo signup — this creates a local session only, nothing is sent anywhere.</p>
+      <label class="fm-field">Full name<input id="signupName" type="text" placeholder="e.g. Nevin Jose"/></label>
+      <label class="fm-field">I am a…
+        <select id="signupRole">
+          <option value="student">Student</option>
+          <option value="teacher">Catechism Teacher</option>
+          <option value="headmaster">Headmaster</option>
+          <option value="graduate">Graduate</option>
+        </select>
+      </label>
+      ${Button("Create account", "auth:signup")}
+      <p class="fm-muted">Already have an account? <a href="#/login">Log in</a></p>
+    </div>`);
+}
+function PageAbout() {
+    return Shell("about", h `
+    <div class="fm-about">
+      <h1>About FaithMate</h1>
+      <section class="fm-founder">
+        <div class="fm-founder__avatar">JJ</div>
+        <div>
+          <h2>Jesson Joseph — Founder</h2>
+          <p>FaithMate began after Jesson struggled to get the results he wanted in his own 6th and 7th grade
+          catechism classes — and noticed friends quietly struggling too, with no easy way to practise at home
+          between Sunday classes. FaithMate was built so students would have a second, friendly way to learn and
+          revise alongside their catechism teacher's support — not to replace it.</p>
+        </div>
+      </section>
+      <section class="fm-grid3">
+        ${Card(`<h3>Our approach</h3><p>Grade-by-grade lessons, gentle quizzes, and an AI tutor that explains rather than just answers.</p>`)}
+        ${Card(`<h3>Content integrity</h3><p>All demo lessons/quizzes are clearly labeled SAMPLE CONTENT. Real classroom use requires verified, approved textbook material.</p>`)}
+        ${Card(`<h3>Who it's for</h3><p>Students Grade 1–12, catechism teachers, headmasters, and graduates continuing their faith journey.</p>`)}
+      </section>
+    </div>`);
+}
+// ---------------------------------------------------------------------------
+// 10. PAGES — GRADE SELECT / DASHBOARD
+// ---------------------------------------------------------------------------
+function PageGradeSelect() {
+    const grades = Array.from({ length: 12 }, (_, i) => (i + 1));
+    return Shell("grade-select", h `
+    <div class="fm-pagehead">
+      <h1>Choose your grade</h1>
+      <p class="fm-muted">Everything you see next — lessons, quizzes, daily challenges, leaderboard, AI tutor — will match this grade only.</p>
+    </div>
+    <div class="fm-gradegrid">
+      ${grades.map(g => h `
+        <button class="fm-gradecard ${state.grade === g ? "is-selected" : ""}" data-action="select-grade:${g}">
+          <span class="fm-gradecard__num">${g}</span>
+          <span class="fm-gradecard__label">Grade ${g}</span>
+          <span class="fm-gradecard__unit">${UNIT_NAMES[g]}</span>
+        </button>`).join("")}
+    </div>
+  `);
+}
+function PageDashboard() {
+    if (!requireGrade())
+        return "";
+    const grade = state.grade;
+    const lessons = CurriculumRepository.getLessonsForGrade(grade);
+    const done = lessons.filter(l => state.completedLessonIds.has(l.id)).length;
+    const pct = lessons.length ? Math.round((done / lessons.length) * 100) : 0;
+    const nextLesson = lessons.find(l => !state.completedLessonIds.has(l.id)) ?? lessons[0];
+    return Shell("dashboard", h `
+    <div class="fm-pagehead fm-pagehead--row">
+      <div>
+        <h1>Hi ${esc(state.name || "there")} 👋</h1>
+        <p class="fm-muted">Grade ${grade} · ${UNIT_NAMES[grade]}</p>
+      </div>
+      <div class="fm-pagehead__badges">${StreakBadge(state.streak)} ${XpBadge(state.xp)}</div>
+    </div>
+
+    <div class="fm-grid3">
+      ${Card(h `<h3>Continue learning</h3>${ProgressBar(pct, `${done}/${lessons.length} lessons complete`)}
+        <p class="fm-muted" style="margin-top:10px">Next up: <b>${esc(nextLesson?.title ?? "—")}</b></p>
+        ${Button("Resume lesson", `open-lesson:${nextLesson?.id ?? ""}`)}`, "fm-card--accent")}
+      ${Card(h `<h3>Daily Quiz</h3><p class="fm-muted">5 fresh questions from your grade, every day.</p>${Button("Start Daily Quiz", "go:daily-quiz", "outline")}`)}
+      ${Card(h `<h3>AI Tutor</h3><p class="fm-muted">Stuck on something? Ask FaithMate's tutor — it explains, it doesn't just answer.</p>${Button("Open AI Tutor", "go:ai-tutor", "outline")}`)}
+    </div>
+
+    <div class="fm-section">
+      <h2>Quick links</h2>
+      <div class="fm-quicklinks">
+        ${Button("📘 All Lessons", "go:lessons", "ghost")}
+        ${Button("🎮 Games", "go:games", "ghost")}
+        ${Button("🧠 Brain Mode", "go:brain-mode", "ghost")}
+        ${Button("📈 My Progress", "go:progress", "ghost")}
+        ${Button("🏆 Leaderboard", "go:leaderboard", "ghost")}
+      </div>
+    </div>
+  `);
+}
+// ---------------------------------------------------------------------------
+// 11. PAGES — LESSONS / LESSON / QUIZ / RESULTS
+// ---------------------------------------------------------------------------
+function PageLessons() {
+    if (!requireGrade())
+        return "";
+    const grade = state.grade;
+    const lessons = CurriculumRepository.getLessonsForGrade(grade);
+    return Shell("lessons", h `
+    <div class="fm-pagehead">
+      <h1>Grade ${grade} Lessons</h1>
+      <p class="fm-muted">${UNIT_NAMES[grade]} ${PlaceholderTag()}</p>
+    </div>
+    <div class="fm-lessonlist">
+      ${lessons.map((l, i) => h `
+        <div class="fm-lessonrow ${state.completedLessonIds.has(l.id) ? "is-done" : ""}">
+          <div class="fm-lessonrow__num">${state.completedLessonIds.has(l.id) ? "✓" : i + 1}</div>
+          <div class="fm-lessonrow__body">
+            <h3>${esc(l.title)}</h3>
+            <p class="fm-muted">${esc(l.summary)} · ${l.estMinutes} min</p>
+          </div>
+          ${Button(state.completedLessonIds.has(l.id) ? "Review" : "Start", `open-lesson:${l.id}`, "outline")}
+        </div>`).join("")}
+    </div>
+  `);
+}
+function PageTextbooks() {
+    if (!requireGrade())
+        return "";
+    const grade = state.grade;
+    const lessons = CurriculumRepository.getLessonsForGrade(grade);
+    return Shell("textbooks", h `
+    <div class="fm-pagehead">
+      <h1>Textbook Library</h1>
+      <p class="fm-muted">Official series: <b>${esc(TEXTBOOK_SERIES.name)}</b> · ${esc(TEXTBOOK_SERIES.publisher)} · ${esc(TEXTBOOK_SERIES.coverage)}</p>
+    </div>
+    <div class="fm-card fm-card--notice">
+      <h3>📖 About this section</h3>
+      <p>FaithMate does not reproduce text from the official textbook series. The chapters below are a structural
+      placeholder for Grade ${grade}. A verified teacher can attach real excerpt notes to any chapter from the
+      Teacher Dashboard — those appear here clearly marked, separate from any demo/AI content.</p>
+    </div>
+    <div class="fm-lessonlist">
+      ${lessons.map((l, i) => {
+        const hasNotes = !!teacherChapterNotes[l.id];
+        return h `
+        <div class="fm-lessonrow">
+          <div class="fm-lessonrow__num">${i + 1}</div>
+          <div class="fm-lessonrow__body">
+            <h3>Chapter ${i + 1}: ${esc(l.title.replace(/^Lesson \d+: /, ""))}</h3>
+            <p class="fm-muted">${hasNotes ? "✅ Teacher notes attached" : "⏳ Chapter text not yet uploaded by a teacher"}</p>
+          </div>
+          ${Button("Open lesson", `open-lesson:${l.id}`, "outline")}
+        </div>`;
+    }).join("")}
+    </div>
+  `);
+}
+function PageLesson(id) {
+    if (!requireGrade())
+        return "";
+    const lesson = CurriculumRepository.getLesson(id);
+    if (!lesson)
+        return Shell("lessons", `<div class="fm-pagehead"><h1>Lesson not found</h1>${Button("Back to lessons", "go:lessons")}</div>`);
+    if (lesson.grade !== state.grade)
+        return Shell("lessons", `<div class="fm-pagehead"><h1>That lesson belongs to a different grade</h1><p class="fm-muted">You're set to Grade ${state.grade}. Switch grade to view it.</p>${Button("Back to my lessons", "go:lessons")}</div>`);
+    return Shell("lessons", h `
+    <div class="fm-pagehead">
+      <span class="fm-tag">${esc(lesson.unit)}</span>
+      <h1>${esc(lesson.title)}</h1>
+      <p class="fm-muted">${esc(lesson.summary)} ${PlaceholderTag()}</p>
+    </div>
+    <div class="fm-lessoncontent">
+      ${lesson.content.map(b => Card(h `<h3>${esc(b.heading)}</h3><p>${esc(b.body)}</p>`)).join("")}
+      ${teacherChapterNotes[lesson.id]
+        ? Card(h `<span class="fm-tag" style="background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.4);color:var(--green)">Teacher notes · ${esc(TEXTBOOK_SERIES.name)}</span><p>${esc(teacherChapterNotes[lesson.id])}</p>`, "fm-card--accent")
+        : Card(`<span class="fm-tag">Textbook chapter</span><p class="fm-muted">Your teacher hasn't added official textbook notes for this chapter yet. Ask them to add some from the Teacher Dashboard.</p>`)}
+    </div>
+    <div class="fm-lessonactions">
+      ${Button("Mark complete & take quiz →", `finish-lesson:${lesson.id}`)}
+      ${Button("Ask the AI Tutor about this", `ai-about:${lesson.id}`, "outline")}
+    </div>
+  `);
+}
+function PageQuiz() {
+    if (!requireGrade())
+        return "";
+    if (!activeQuiz)
+        return Shell("lessons", `<div class="fm-pagehead"><h1>No quiz in progress</h1>${Button("Back to lessons", "go:lessons")}</div>`);
+    const { questions, index } = activeQuiz;
+    if (index >= questions.length) {
+        navigate("quiz-results");
+        return "";
+    }
+    const q = questions[index];
+    return Shell("lessons", h `
+    <div class="fm-quizwrap">
+      <div class="fm-quizhead">
+        <span class="fm-tag">Grade ${state.grade} · Question ${index + 1} of ${questions.length}</span>
+        ${ProgressBar(((index) / questions.length) * 100)}
+      </div>
+      <h1>${esc(q.question)}</h1>
+      <div class="fm-options" id="quizOptions">
+        ${q.options.map((o, i) => h `<button class="fm-option" data-action="answer:${i}">${esc(o)}</button>`).join("")}
+      </div>
+      <div id="quizFeedback"></div>
+    </div>
+  `);
+}
+function PageQuizResults() {
+    if (!lastQuizResult)
+        return Shell("lessons", `<div class="fm-pagehead"><h1>No results yet</h1>${Button("Back to lessons", "go:lessons")}</div>`);
+    const r = lastQuizResult;
+    const pct = Math.round((r.correct / r.total) * 100);
+    return Shell("lessons", h `
+    <div class="fm-pagehead">
+      <h1>Quiz Results</h1>
+      <p class="fm-muted">You scored <b>${r.correct}/${r.total}</b> (${pct}%) · +${r.xp} XP</p>
+    </div>
+    ${ProgressBar(pct, `${pct}% correct`)}
+    ${r.wrongs.length === 0 ? Card(`<h3>🎉 Perfect score!</h3><p>Every answer was correct. Great work.</p>`) : h `
+      <div class="fm-section">
+        <h2>Let's fix these together</h2>
+        ${r.wrongs.map(w => Card(h `
+          <h3>${esc(w.q.question)}</h3>
+          <p><span class="fm-wrong">Your answer: ${esc(w.q.options[w.chosen])}</span></p>
+          <p><span class="fm-right">Correct answer: ${esc(w.q.options[w.q.correctIndex])}</span></p>
+          <p class="fm-muted">${esc(w.q.explanation)}</p>
+          ${Button("Ask AI Tutor to explain more", `ai-mistake:${w.q.id}`, "outline")}
+        `)).join("")}
+      </div>`}
+    <div class="fm-lessonactions">
+      ${Button("Back to Lessons", "go:lessons")}
+      ${Button("Open AI Tutor", "go:ai-tutor", "outline")}
+    </div>
+  `);
+}
+// ---------------------------------------------------------------------------
+// 12. PAGES — DAILY QUIZ / GAMES / BRAIN MODE
+// ---------------------------------------------------------------------------
+function PageDailyQuiz() {
+    if (!requireGrade())
+        return "";
+    return Shell("daily-quiz", h `
+    <div class="fm-pagehead">
+      <h1>Daily Quiz</h1>
+      <p class="fm-muted">5 fresh Grade ${state.grade} questions, refreshed each visit. ${PlaceholderTag()}</p>
+    </div>
+    ${Card(h `<h3>Today's challenge</h3><p class="fm-muted">Answer all 5 to keep your streak alive and earn bonus XP.</p>${Button("Start Daily Quiz", "start-quiz:daily")}`, "fm-card--accent")}
+  `);
+}
+function PageGames() {
+    if (!requireGrade())
+        return "";
+    return Shell("games", h `
+    <div class="fm-pagehead"><h1>Games</h1><p class="fm-muted">Grade ${state.grade} mini-games. ${PlaceholderTag()}</p></div>
+    <div class="fm-grid3">
+      ${Card(h `<h3>⚡ Speed Round</h3><p>Answer as many Grade ${state.grade} questions as you can before time runs out.</p>${Button("Play", "start-quiz:brain")}`)}
+      ${Card(h `<h3>🧩 Matching (coming soon)</h3><p>Match terms to meanings. Placeholder for the full demo — not wired up yet.</p>${Button("Preview", "toast:Coming soon in the next build", "ghost")}`)}
+      ${Card(h `<h3>🃏 Flashcards (coming soon)</h3><p>Flip through key ideas from your current unit.</p>${Button("Preview", "toast:Coming soon in the next build", "ghost")}`)}
+    </div>
+  `);
+}
+function PageBrainMode() {
+    if (!requireGrade())
+        return "";
+    return Shell("brain-mode", h `
+    <div class="fm-pagehead">
+      <h1>Brain Mode 🧠</h1>
+      <p class="fm-muted">An endless mixed round of every Grade ${state.grade} question — no lesson order, just recall. ${PlaceholderTag()}</p>
+    </div>
+    ${Card(h `<h3>Ready?</h3><p class="fm-muted">Questions are shuffled from your whole grade's question bank.</p>${Button("Enter Brain Mode", "start-quiz:brain")}`, "fm-card--accent")}
+  `);
+}
+// ---------------------------------------------------------------------------
+// 13. PAGE — AI TUTOR
+// ---------------------------------------------------------------------------
+function localTutorReply(userText) {
+    const grade = state.grade ?? 8;
+    const t = userText.toLowerCase();
+    if (t.includes("answer") && (t.includes("just") || t.includes("give"))) {
+        return `I won't just hand you the answer — that skips the learning! Let's break it down for Grade ${grade}: what part of this feels confusing? Tell me that, and I'll give you a hint to work from.`;
+    }
+    if (t.length < 3) {
+        return `Could you tell me a bit more about what you're studying in Grade ${grade}? For example: "Can you explain the topic of ${UNIT_NAMES[grade]}?"`;
+    }
+    return `Good question. Here's a Grade ${grade}-level way to think about it: start from what you already know, connect it to "${UNIT_NAMES[grade]}", and ask yourself *why* it matters, not just *what* it says. Want a hint, a fuller explanation, or a practice question on this?`;
+}
+async function tryRealAiTutor(userText) {
+    const grade = state.grade ?? 8;
+    const system = `You are FaithMate's AI catechism tutor for a Grade ${grade} Syro-Malabar Church student. ` +
+        `Teach — do not just give final answers. Explain concepts simply, offer hints before answers, and adapt your ` +
+        `language to a Grade ${grade} reading level. If asked to just give an answer, gently redirect to a guiding ` +
+        `question or hint first. Keep replies under 120 words. This is a demo app using only clearly-labeled sample ` +
+        `curriculum, not verified textbook content — you may mention that if directly relevant.`;
+    try {
+        const resp = await fetch("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: "claude-sonnet-4-6",
+                max_tokens: 400,
+                system,
+                messages: [...aiChatLog.map(m => ({ role: m.role, content: m.text })), { role: "user", content: userText }],
+            }),
+        });
+        if (!resp.ok)
+            return null;
+        const data = await resp.json();
+        const block = (data.content || []).find((c) => c.type === "text");
+        return block ? block.text : null;
+    }
+    catch {
+        return null;
+    }
+}
+function PageAiTutor() {
+    if (!requireGrade())
+        return "";
+    return Shell("ai-tutor", h `
+    <div class="fm-pagehead">
+      <h1>AI Tutor 💬</h1>
+      <p class="fm-muted">Adapted to Grade ${state.grade}. It teaches with hints and explanations — it won't just hand you answers.</p>
+    </div>
+    <div class="fm-chat">
+      <div class="fm-chat__log" id="chatLog">
+        ${aiChatLog.length === 0 ? `<div class="fm-chat__bubble fm-chat__bubble--ai">Hi! I'm your Grade ${state.grade} FaithMate tutor. Ask me to explain a concept, give you a hint, or walk through a mistake.</div>` :
+        aiChatLog.map(m => `<div class="fm-chat__bubble fm-chat__bubble--${m.role === "user" ? "user" : "ai"}">${esc(m.text)}</div>`).join("")}
+      </div>
+      <form id="chatForm" class="fm-chat__form">
+        <input id="chatInput" type="text" placeholder="Ask about a lesson, a mistake, or say 'give me a hint'…" autocomplete="off"/>
+        ${Button("Send", "chat:send")}
+      </form>
+    </div>
+  `);
+}
+// ---------------------------------------------------------------------------
+// 14. PAGES — PROGRESS / LEADERBOARD
+// ---------------------------------------------------------------------------
+function PageProgress() {
+    if (!requireGrade())
+        return "";
+    const grade = state.grade;
+    const lessons = CurriculumRepository.getLessonsForGrade(grade);
+    const done = lessons.filter(l => state.completedLessonIds.has(l.id)).length;
+    const pct = lessons.length ? Math.round((done / lessons.length) * 100) : 0;
+    const history = state.quizHistory.filter(a => a.grade === grade);
+    const avgScore = history.length ? Math.round(history.reduce((s, a) => s + a.answers.filter(x => x.correct).length / a.answers.length, 0) / history.length * 100) : 0;
+    return Shell("progress", h `
+    <div class="fm-pagehead"><h1>My Progress</h1><p class="fm-muted">Grade ${grade} · ${UNIT_NAMES[grade]}</p></div>
+    <div class="fm-grid3">
+      ${Card(h `<h3>Lessons</h3>${ProgressBar(pct, `${done}/${lessons.length} complete`)}`)}
+      ${Card(h `<h3>XP & Level</h3><p style="font-size:28px;margin:6px 0">${state.xp} XP</p><p class="fm-muted">Level ${levelFromXp(state.xp)} · ${xpIntoLevel(state.xp)}/200 to next level</p>`)}
+      ${Card(h `<h3>Streak</h3><p style="font-size:28px;margin:6px 0">${state.streak} 🔥</p><p class="fm-muted">Keep answering daily quizzes to grow this.</p>`)}
+    </div>
+    <div class="fm-section">
+      <h2>Quiz history</h2>
+      ${history.length === 0 ? `<p class="fm-muted">No quizzes taken yet this session.</p>` :
+        `<div class="fm-lessonlist">${history.slice().reverse().map(a => {
+            const c = a.answers.filter(x => x.correct).length;
+            return `<div class="fm-lessonrow"><div class="fm-lessonrow__num">${Math.round(c / a.answers.length * 100)}%</div><div class="fm-lessonrow__body"><h3>${esc(a.lessonId)}</h3><p class="fm-muted">${c}/${a.answers.length} correct · +${a.xpEarned} XP</p></div></div>`;
+        }).join("")}</div>`}
+      <p class="fm-muted" style="margin-top:8px">Average score this session: <b>${avgScore}%</b></p>
+    </div>
+  `);
+}
+function PageLeaderboard() {
+    if (!requireGrade())
+        return "";
+    const grade = state.grade;
+    const entries = demoLeaderboard(grade);
+    const me = { name: state.name || "You", grade, xp: state.xp, streak: state.streak };
+    const all = [...entries, me].sort((a, b) => b.xp - a.xp);
+    return Shell("leaderboard", h `
+    <div class="fm-pagehead"><h1>Leaderboard</h1><p class="fm-muted">Grade ${grade} · this session ${PlaceholderTag()}</p></div>
+    <div class="fm-lessonlist">
+      ${all.map((e, i) => h `
+        <div class="fm-lessonrow ${e.name === (state.name || "You") ? "is-done" : ""}">
+          <div class="fm-lessonrow__num">#${i + 1}</div>
+          <div class="fm-lessonrow__body"><h3>${esc(e.name)}${e.name === (state.name || "You") ? " (you)" : ""}</h3><p class="fm-muted">🔥 ${e.streak}-day streak</p></div>
+          <span class="fm-badge fm-badge--xp">${e.xp} XP</span>
+        </div>`).join("")}
+    </div>
+  `);
+}
+// ---------------------------------------------------------------------------
+// 15. PAGES — TEACHER / HEADMASTER / GRADUATE DASHBOARDS
+// ---------------------------------------------------------------------------
+function PageTeacherDashboard() {
+    const grade = state.grade ?? 8;
+    const lessons = CurriculumRepository.getLessonsForGrade(grade);
+    return Shell("teacher-dashboard", h `
+    <div class="fm-pagehead"><h1>Teacher Dashboard</h1><p class="fm-muted">Aggregated class view ${PlaceholderTag()}</p></div>
+    <div class="fm-grid3">
+      ${TEACHER_CLASS_SUMMARY.map(c => Card(h `
+        <h3>Grade ${c.grade}</h3>
+        <p class="fm-muted">${c.students} students</p>
+        ${ProgressBar(c.avgProgress * 100, `Avg lesson progress ${Math.round(c.avgProgress * 100)}%`)}
+        ${ProgressBar(c.avgQuizScore * 100, `Avg quiz score ${Math.round(c.avgQuizScore * 100)}%`)}
+      `)).join("")}
+      ${Card(`<h3>Flag a mistake pattern</h3><p class="fm-muted">In the full version, teachers see which questions students miss most, grouped by lesson.</p>${Button("View sample report", "toast:This links to a fuller report in production", "ghost")}`)}
+    </div>
+
+    <div class="fm-section">
+      <h2>Manage textbook content</h2>
+      <p class="fm-muted">Attach verified excerpts from <b>${esc(TEXTBOOK_SERIES.name)}</b> (${esc(TEXTBOOK_SERIES.publisher)}) to a chapter.
+      Only add text you're authorized to use — this demo stores it in memory for this session only.</p>
+      <div class="fm-authcard" style="margin:16px 0 0">
+        <label class="fm-field">Grade
+          <select id="tbGrade">${Array.from({ length: 12 }, (_, i) => i + 1).map(g => `<option value="${g}" ${grade === g ? "selected" : ""}>Grade ${g}</option>`).join("")}</select>
+        </label>
+        <label class="fm-field">Chapter
+          <select id="tbLesson">${lessons.map(l => `<option value="${l.id}">${esc(l.title)}</option>`).join("")}</select>
+        </label>
+        <label class="fm-field">Chapter notes / excerpt<textarea id="tbNotes" rows="4" placeholder="Paste a verified excerpt or your own teaching notes for this chapter…"></textarea></label>
+        ${Button("Save to chapter", "teacher:save-notes")}
+      </div>
+    </div>
+  `);
+}
+function PageHeadmasterDashboard() {
+    return Shell("headmaster-dashboard", h `
+    <div class="fm-pagehead"><h1>Headmaster Dashboard</h1><p class="fm-muted">Whole-parish overview across all grades ${PlaceholderTag()}</p></div>
+    <div class="fm-lessonlist">
+      ${HEADMASTER_SCHOOL_SUMMARY.map(g => h `
+        <div class="fm-lessonrow">
+          <div class="fm-lessonrow__num">${g.grade}</div>
+          <div class="fm-lessonrow__body"><h3>Grade ${g.grade}</h3><p class="fm-muted">${g.students} students · ${g.activeTeachers} teacher(s)</p></div>
+          <div style="width:160px">${ProgressBar(g.avgProgress * 100, `${Math.round(g.avgProgress * 100)}% avg`)}</div>
+        </div>`).join("")}
+    </div>
+  `);
+}
+function PageGraduateDashboard() {
+    return Shell("graduate-dashboard", h `
+    <div class="fm-pagehead"><h1>Graduate Dashboard</h1><p class="fm-muted">Continue your faith journey beyond Grade 12 ${PlaceholderTag()}</p></div>
+    <div class="fm-grid3">
+      ${Card(`<h3>Refresher tracks</h3><p class="fm-muted">Revisit any grade's material any time — no pressure, just review.</p>${Button("Browse grades", "go:grade-select", "outline")}`)}
+      ${Card(`<h3>Mentor a younger student</h3><p class="fm-muted">Graduates will be able to answer questions in the community tutor feed (coming soon).</p>`)}
+      ${Card(`<h3>Your all-time stats</h3><p class="fm-muted">${state.xp} XP earned · ${state.completedLessonIds.size} lessons completed this session.</p>`)}
+    </div>
+  `);
+}
+// ---------------------------------------------------------------------------
+// 16. PAGES — PROFILE / SETTINGS
+// ---------------------------------------------------------------------------
+function PageProfile() {
+    return Shell("profile", h `
+    <div class="fm-pagehead"><h1>Profile</h1></div>
+    <div class="fm-grid3">
+      ${Card(h `
+        <h3>${esc(state.name || "Guest")}</h3>
+        <p class="fm-muted">Role: ${state.role} · Grade: ${state.grade ?? "not selected"}</p>
+        ${XpBadge(state.xp)} ${StreakBadge(state.streak)}
+      `)}
+      ${Card(h `<h3>Lessons completed</h3><p style="font-size:28px">${state.completedLessonIds.size}</p>`)}
+      ${Card(h `<h3>Quizzes taken</h3><p style="font-size:28px">${state.quizHistory.length}</p>`)}
+    </div>
+  `);
+}
+function PageSettings() {
+    return Shell("settings", h `
+    <div class="fm-pagehead"><h1>Settings</h1></div>
+    <div class="fm-authcard">
+      <label class="fm-field">Display name<input id="settingsName" type="text" value="${esc(state.name)}"/></label>
+      <label class="fm-field">Grade
+        <select id="settingsGrade">
+          ${Array.from({ length: 12 }, (_, i) => i + 1).map(g => `<option value="${g}" ${state.grade === g ? "selected" : ""}>Grade ${g}</option>`).join("")}
+        </select>
+      </label>
+      ${Button("Save settings", "settings:save")}
+      <p class="fm-muted" style="margin-top:16px">This demo keeps everything in memory for your session only — nothing is saved to a server or your browser's storage.</p>
+    </div>
+  `);
+}
+// ---------------------------------------------------------------------------
+// 17. QUIZ ENGINE
+// ---------------------------------------------------------------------------
+function startQuiz(source, lessonId) {
+    const grade = state.grade;
+    let questions;
+    if (source === "lesson" && lessonId)
+        questions = CurriculumRepository.getQuizForLesson(lessonId);
+    else if (source === "daily")
+        questions = CurriculumRepository.getDailyQuiz(grade);
+    else
+        questions = CurriculumRepository.getBrainModeQuestions(grade).slice(0, 8);
+    activeQuiz = { questions, index: 0, correct: 0, wrongs: [], source };
+    navigate("quiz");
+}
+function answerQuiz(chosenIndex) {
+    if (!activeQuiz)
+        return;
+    const q = activeQuiz.questions[activeQuiz.index];
+    const correct = chosenIndex === q.correctIndex;
+    if (correct)
+        activeQuiz.correct++;
+    else
+        activeQuiz.wrongs.push({ q, chosen: chosenIndex });
+    const optionsEl = qs("#quizOptions");
+    const feedbackEl = qs("#quizFeedback");
+    if (optionsEl) {
+        optionsEl.querySelectorAll(".fm-option").forEach((btn, i) => {
+            btn.disabled = true;
+            if (i === q.correctIndex)
+                btn.classList.add("is-correct");
+            else if (i === chosenIndex)
+                btn.classList.add("is-wrong");
+        });
+    }
+    if (feedbackEl) {
+        feedbackEl.innerHTML = h `
+      <div class="fm-feedback ${correct ? "is-correct" : "is-wrong"}">
+        <b>${correct ? "Correct! 🎉" : "Not quite."}</b>
+        <p>${esc(q.explanation)}</p>
+        ${Button(activeQuiz.index + 1 < activeQuiz.questions.length ? "Next question →" : "See results →", "quiz:next")}
+      </div>`;
+    }
+}
+function finishQuiz() {
+    if (!activeQuiz)
+        return;
+    const total = activeQuiz.questions.length;
+    const correct = activeQuiz.correct;
+    const xp = correct * 10 + (correct === total ? 20 : 0);
+    state.xp += xp;
+    const attempt = {
+        lessonId: activeQuiz.source === "lesson" ? activeQuiz.questions[0]?.lessonId ?? "unknown" : activeQuiz.source,
+        grade: state.grade,
+        answers: activeQuiz.questions.map((q, i) => ({ questionId: q.id, chosenIndex: -1, correct: !activeQuiz.wrongs.find(w => w.q.id === q.id) })),
+        xpEarned: xp,
+        takenAt: Date.now(),
+    };
+    state.quizHistory.push(attempt);
+    lastQuizResult = { lessonId: attempt.lessonId, total, correct, xp, wrongs: activeQuiz.wrongs };
+    activeQuiz = null;
+    navigate("quiz-results");
+}
+// ---------------------------------------------------------------------------
+// 18. RENDER / ROUTE TABLE
+// ---------------------------------------------------------------------------
+const app = document.getElementById("app");
+function render() {
+    const { path, params } = parseHash();
+    let html = "";
+    switch (path) {
+        case "home":
+            html = PageHome();
+            break;
+        case "login":
+            html = PageLogin();
+            break;
+        case "signup":
+            html = PageSignup();
+            break;
+        case "about":
+            html = PageAbout();
+            break;
+        case "grade-select":
+            html = PageGradeSelect();
+            break;
+        case "dashboard":
+            html = PageDashboard();
+            break;
+        case "lessons":
+            html = PageLessons();
+            break;
+        case "textbooks":
+            html = PageTextbooks();
+            break;
+        case "lesson":
+            html = PageLesson(params.id);
+            break;
+        case "quiz":
+            html = PageQuiz();
+            break;
+        case "quiz-results":
+            html = PageQuizResults();
+            break;
+        case "daily-quiz":
+            html = PageDailyQuiz();
+            break;
+        case "games":
+            html = PageGames();
+            break;
+        case "brain-mode":
+            html = PageBrainMode();
+            break;
+        case "ai-tutor":
+            html = PageAiTutor();
+            break;
+        case "progress":
+            html = PageProgress();
+            break;
+        case "leaderboard":
+            html = PageLeaderboard();
+            break;
+        case "teacher-dashboard":
+            html = PageTeacherDashboard();
+            break;
+        case "headmaster-dashboard":
+            html = PageHeadmasterDashboard();
+            break;
+        case "graduate-dashboard":
+            html = PageGraduateDashboard();
+            break;
+        case "profile":
+            html = PageProfile();
+            break;
+        case "settings":
+            html = PageSettings();
+            break;
+        default: html = PageHome();
+    }
+    if (html)
+        app.innerHTML = html;
+    window.scrollTo({ top: 0, behavior: "instant" });
+    const chatLog = qs("#chatLog");
+    if (chatLog)
+        chatLog.scrollTop = chatLog.scrollHeight;
+    initScrollReveal();
+}
+let scrollObserver = null;
+function initScrollReveal() {
+    if (!scrollObserver) {
+        scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("is-in");
+                    scrollObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+    }
+    document.querySelectorAll(".fm-reveal-onscroll").forEach(el => scrollObserver.observe(el));
+}
+function toast(msg) {
+    const el = document.createElement("div");
+    el.className = "fm-toast";
+    el.textContent = msg;
+    document.body.appendChild(el);
+    requestAnimationFrame(() => el.classList.add("is-visible"));
+    setTimeout(() => { el.classList.remove("is-visible"); setTimeout(() => el.remove(), 300); }, 2600);
+}
+// ---------------------------------------------------------------------------
+// 19. GLOBAL EVENT DELEGATION
+// ---------------------------------------------------------------------------
+async function handleAction(action) {
+    const [cmd, arg] = action.split(":");
+    switch (cmd) {
+        case "go":
+            navigate(arg);
+            break;
+        case "toggle": {
+            const nav = qs("#mobilenav");
+            if (nav)
+                nav.classList.toggle("is-open");
+            break;
+        }
+        case "select-grade": {
+            state.grade = Number(arg);
+            toast(`Grade ${arg} selected`);
+            navigate("dashboard");
+            break;
+        }
+        case "open-lesson":
+            if (arg)
+                navigate("lesson/" + arg);
+            break;
+        case "finish-lesson": {
+            state.completedLessonIds.add(arg);
+            startQuiz("lesson", arg);
+            break;
+        }
+        case "start-quiz":
+            startQuiz(arg);
+            break;
+        case "answer":
+            answerQuiz(Number(arg));
+            break;
+        case "quiz": {
+            if (arg === "next") {
+                if (activeQuiz) {
+                    activeQuiz.index++;
+                    if (activeQuiz.index >= activeQuiz.questions.length)
+                        finishQuiz();
+                    else
+                        render();
+                }
+            }
+            break;
+        }
+        case "auth": {
+            if (arg === "login") {
+                const val = (qs("#loginName")?.value ?? "").trim();
+                state.name = val || "Guest Student";
+                toast(`Welcome back, ${state.name}!`);
+                navigate(state.grade ? "dashboard" : "grade-select");
+            }
+            else if (arg === "signup") {
+                const name = (qs("#signupName")?.value ?? "").trim();
+                const role = (qs("#signupRole")?.value ?? "student");
+                state.name = name || "New Student";
+                state.role = role;
+                toast(`Account created for ${state.name}`);
+                if (role === "teacher")
+                    navigate("teacher-dashboard");
+                else if (role === "headmaster")
+                    navigate("headmaster-dashboard");
+                else if (role === "graduate")
+                    navigate("graduate-dashboard");
+                else
+                    navigate("grade-select");
+            }
+            break;
+        }
+        case "settings": {
+            if (arg === "save") {
+                state.name = (qs("#settingsName")?.value ?? state.name).trim();
+                state.grade = Number(qs("#settingsGrade")?.value ?? state.grade);
+                toast("Settings saved");
+                navigate("dashboard");
+            }
+            break;
+        }
+        case "ai-about":
+        case "ai-mistake": {
+            const grade = state.grade ?? 8;
+            const prompt = cmd === "ai-about"
+                ? `Can you help me understand the lesson I just read (Grade ${grade})?`
+                : `I got this question wrong: ${arg}. Can you explain it, Grade ${grade} style?`;
+            navigate("ai-tutor");
+            setTimeout(() => sendChat(prompt), 50);
+            break;
+        }
+        case "chat":
+            if (arg === "send")
+                await sendChat((qs("#chatInput")?.value ?? "").trim());
+            break;
+        case "teacher": {
+            if (arg === "save-notes") {
+                const lessonId = qs("#tbLesson")?.value ?? "";
+                const notes = (qs("#tbNotes")?.value ?? "").trim();
+                if (lessonId && notes) {
+                    teacherChapterNotes[lessonId] = notes;
+                    toast("Chapter notes saved for this session");
+                    render();
+                }
+                else {
+                    toast("Add chapter notes before saving");
+                }
+            }
+            break;
+        }
+        case "toast":
+            toast(arg.replace(/-/g, " "));
+            break;
+    }
+}
+async function sendChat(text) {
+    if (!text)
+        return;
+    aiChatLog.push({ role: "user", text });
+    render();
+    const input = qs("#chatInput");
+    if (input)
+        input.value = "";
+    const thinkingId = "thinking-" + Date.now();
+    const log = qs("#chatLog");
+    if (log)
+        log.insertAdjacentHTML("beforeend", `<div class="fm-chat__bubble fm-chat__bubble--ai" id="${thinkingId}">Thinking…</div>`);
+    if (log)
+        log.scrollTop = log.scrollHeight;
+    const real = await tryRealAiTutor(text);
+    const reply = real ?? localTutorReply(text);
+    aiChatLog.push({ role: "assistant", text: reply });
+    render();
+}
+document.addEventListener("click", (e) => {
+    const target = e.target.closest("[data-action]");
+    if (target) {
+        e.preventDefault();
+        void handleAction(target.dataset.action);
+    }
+});
+document.addEventListener("submit", (e) => {
+    const form = e.target;
+    if (form && form.id === "chatForm") {
+        e.preventDefault();
+        void handleAction("chat:send");
+    }
+});
+window.addEventListener("hashchange", render);
+window.addEventListener("DOMContentLoaded", render);
+render();
+
+</script>
+</body>
+</html>
